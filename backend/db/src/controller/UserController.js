@@ -2,58 +2,102 @@
 
 const { where } = require('sequelize');
 const User = require('../models/User');
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
 module.exports = {
     async createUser(req, res) {
         try {
-            const { name, email, password, status } = await req.body;
+            const { name, email, password,confirmPassword, status } = await req.body;
             const user = await User.findOne({ where: { email: email } });
-
-            if (user) {
-                res.json({ error: 'Email já cadastrado.' });
-            } else {
-                const user = await User.create({ name: name, email: email, password: password, status: true });
-                res.json({ user: user });
-
-                
+            
+            if(name === '' || email === '' || password === '') {
+                res.status(400).json({ error: 'Campos obrigatorio' });
             }
+            if (user) {
+                res.status(400).json({ error: 'Email já cadastrado.' });
+            } else {
+                if(password === confirmPassword){
+                    const salt = await bcrypt.genSalt(12)
+                    const passwordHash = await bcrypt.hash(password, salt)
+
+                    const user = await User.create({
+                        name,
+                        email,
+                        password: passwordHash,
+                        
+                    });
+                    res.status(200).json({ user: {name, email, password: passwordHash},msg: "Cadastrado com sucesso" })                 
+                }else{                    
+                    res.status(400).json({ error: 'senha nao confere' });
+                }
+            }
+
+            
+            
+               
         } catch (error) {
-            res.json({ error: 'Erro interno do servidor.' });
+            res.status(400).json({ error: 'Erro interno do servidor.' });
             //console.log({error})
         }
     },
+    async loginUser(req, res) {
+
+        const{email, password} = req.body
+        const user = await User.findOne({ where: { email: email } });
+        if(email === '' || password === '') {
+            res.status(400).json({ error: 'Campos obrigatorio' });
+        }
+        if(!user){            
+            res.status(400).json({ error: 'usuario nao encontrado' });
+        }
+        const checkPassword = await bcrypt.compare(password, user.password)
+        
+        
+        if(!checkPassword){
+            res.status(400).json({ error: 'email ou senha incorretos' });
+        }
+
+        try {
+            const secret = process.env.SECRET
+            const token = jwt.sign({id:user._id},secret, )
+            res.status(200).json({msg: "Autenticado com sucesso!"}, token)
+
+            
+        } catch (error) {
+            
+        }
+
+    },    
     async updateUser(req, res) {
         try {
             const { id } = req.params
             const { name, email,password, token, status } = await req.body;
-
-
             const user = await User.findOne({ where: {id} })
 
             if (!user) {
-                res.json({ error: 'nao encontrado' });
+                res.status(400).json({ error: 'nao encontrado' });
             } else {
                 const user = await User.update({ name, email,password, token, status }, { where: { id } })
-                res.json({ user:user });
+                res.status(200).json({ user: {name, email} })
                 return user
             }
 
-
         } catch (error) {
-            res.json({ error: 'Erro interno do servidor.' });
+            res.status(400).json({ error: 'Erro interno do servidor.' });
             //console.log({error})
         }
     },
-    async listUsers(req, res) {
+    async listUsers(req, res, next) {
         try {
             const users = await User.findAll()
             
             if(!users){
-                res.json({message: "nenhum resultado encontrado"})                
+                res.status(200).json({message: "nenhum resultado encontrado"})                
             }else{
                 
                 //const users = User.findAll()
-                res.json({users: users})
+                res.status(200).json({users})
                 return users
             }
         } catch (error) {
@@ -65,11 +109,11 @@ module.exports = {
         const user = await User.findOne({where: {id}})
         
         if(!user){
-            res.json({ message: "nenhum resultado encontrado"})
+            res.status(200).json({ message: "nenhum resultado encontrado"})
         }else {
 
             const user = await User.destroy({where: {id}})
-            res.json({ ok: true})
+            res.status(200).json({ ok: true})
 
         }
     },
@@ -78,11 +122,12 @@ module.exports = {
         const user = await User.findOne({where: {id}})
         
         if(!user){
-            res.json({ message: "nenhum resultado encontrado"})
+            res.status(400).json({ message: "nenhum resultado encontrado"})
         }else {
 
             const user = await User.findOne({where: {id}})
-            res.json({user:user})
+            const {name,email} = user            
+            res.status(200).json({ user: {id, name, email} })  
             return user
         }
     }

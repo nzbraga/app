@@ -8,6 +8,8 @@ require('./database')
     app.use(cors())
     app.use(express.json())
     app.use(routes)
+
+    
     app.listen(3031)
     console.log("server On 3031")
 
