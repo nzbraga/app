@@ -1,12 +1,9 @@
 import React,{ useState, useEffect } from "react";
-import { View, Text, Image, TextInput, Pressable } from 'react-native';
+import { View, Text, Image, TextInput, TouchableOpacity } from 'react-native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-
 
 import {loginUser} from '../../service/db/User'
 import {newLogin} from '../../service/storage/newLogin'
-
 
 import { useNavigation } from '@react-navigation/native'
 import { style } from "./style";
@@ -28,6 +25,8 @@ async function handleLoginUser(email,password){
       newLogin(`@season_APP`,newStorage)
       navigation.navigate('Home')
     }
+    setEmail('')
+    setPassword('')
   })
 }
 const loadUserData = async () => {
@@ -63,19 +62,26 @@ return(
 
     <TextInput
       style={style.input}
-      value={password}            
+      value={password} 
+      secureTextEntry={true}           
       onChangeText={(e)=>setPassword(e)}
       placeholder="Digite seu password"
     />
 
-      <Pressable style={style.button} onPress={()=>handleLoginUser(email,password)}>
+      <TouchableOpacity style={style.button} onPress={()=>handleLoginUser(email,password)}>
           <Text style={style.buttonText}> Logar </Text>
-      </Pressable>   
-    <Text> ou  </Text>
+      </TouchableOpacity>   
+    
+   
+      <br></br>
+      <Text> ------------------ ou ------------------ </Text>
+      <br></br>
+      <br></br>
 
-    <Pressable style={style.button} onPress={()=>navigation.navigate('CreateLogin')}>
+      <Text style={style.title}> CRIAR LOGIN? </Text>
+    <TouchableOpacity style={style.button} onPress={()=>navigation.navigate('CreateLogin')}>
         <Text style={style.buttonText}>Criar</Text>
-    </Pressable>
+    </TouchableOpacity>
     
 
   </View>
