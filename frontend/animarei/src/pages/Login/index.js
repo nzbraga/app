@@ -1,9 +1,9 @@
 import React,{ useState, useEffect } from "react";
 import { View, Text, Image, TextInput, TouchableOpacity } from 'react-native';
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import {loginUser} from '../../service/db/User'
-import {newLogin} from '../../service/storage/newLogin'
+import {newLogin, loadUserData} from '../../service/storage/localUser'
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { useNavigation } from '@react-navigation/native'
 import { style } from "./style";
@@ -29,6 +29,7 @@ async function handleLoginUser(email,password){
     setPassword('')
   })
 }
+
 const loadUserData = async () => {
   try {
     await AsyncStorage.getItem('@season_APP').then(res=>{          
@@ -45,7 +46,7 @@ const loadUserData = async () => {
 };
   
   useEffect(()=>{   
-      loadUserData()     
+      loadUserData() 
 },[])
 
 return(
