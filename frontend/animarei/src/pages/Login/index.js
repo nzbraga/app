@@ -2,7 +2,7 @@ import React,{ useState, useEffect } from "react";
 import { View, Text, Image, TextInput, TouchableOpacity } from 'react-native';
 
 import {loginUser} from '../../service/db/User'
-import {newLogin, loadUserData} from '../../service/storage/localUser'
+import {newLogin} from '../../service/storage/localUser'
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { useNavigation } from '@react-navigation/native'
@@ -10,6 +10,7 @@ import { style } from "./style";
 
 export default function Login() {
 
+const [ user, setUser] = useState({})
 const [ email, setEmail] = useState('')
 const [ password, setPassword] = useState('')
 
@@ -19,12 +20,14 @@ async function handleLoginUser(email,password){
 
   await loginUser(email, password).then(res=>{    
     const newData = res.data
-    const user = newData.user  
-    if(newData){
-      const newStorage = JSON.stringify({token: newData.token, id:user.id})     
-      newLogin(`@season_APP`,newStorage)
+    const newUser = newData.user  
+   // console.log(newUser)
+    
+    if(newUser){
+      const newStorage = JSON.stringify(newUser)     
+      newLogin(newStorage)   
       navigation.navigate('Home')
-    }
+    }    
     setEmail('')
     setPassword('')
   })
@@ -33,11 +36,11 @@ async function handleLoginUser(email,password){
 const loadUserData = async () => {
   try {
     await AsyncStorage.getItem('@season_APP').then(res=>{          
-      if(res){
-        navigation.navigate("Home")
-      }
-    }).catch(err=>{console.log(err)})
-         
+    setUser(res)
+    if(res){
+      navigation.navigate('Home')
+    }
+    }).catch(err=>{console.log(err)})        
       
     } catch (error) {
       console.error('Erro ao carregar os dados do usuário:', error);
@@ -45,9 +48,9 @@ const loadUserData = async () => {
    
 };
   
-  useEffect(()=>{   
-      loadUserData() 
-},[])
+useEffect(()=>{   
+      loadUserData()   
+},[user])
 
 return(
   <View style={style.container}>
@@ -74,10 +77,9 @@ return(
       </TouchableOpacity>   
     
    
-      <br></br>
+      
       <Text> ------------------ ou ------------------ </Text>
-      <br></br>
-      <br></br>
+      
 
       <Text style={style.title}> CRIAR LOGIN? </Text>
     <TouchableOpacity style={style.button} onPress={()=>navigation.navigate('CreateLogin')}>

@@ -12,8 +12,7 @@ export default StyleSheet.create({
     padding:20, 
     width: '100%',
     
-  },
-  
+  },  
   user: {
     alignItems: 'center',
     justifyContent: "center",

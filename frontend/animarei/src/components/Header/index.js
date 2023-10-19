@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { View, TouchableOpacity, Text, Image } from 'react-native';
+import { View, Pressable, Text, Image } from 'react-native';
+
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { logOut } from '../../service/storage/localUser';
-import { usersById } from '../../service/db/User'
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
 
 import styles from './style';
 
@@ -13,9 +13,6 @@ import styles from './style';
 const Header = () => {
 
   const [user, setUser] = useState({})
-  const [userId, setUserId] = useState('')
-  const [tokenId, setTokenId] = useState('')
-
 
   const navigation = useNavigation()
 
@@ -27,32 +24,19 @@ const Header = () => {
 
   const loadUserData = async () => {
     try {
-      const userData = await AsyncStorage.getItem('@season_APP')
-      const data = JSON.parse(userData)
-      const id = data.id
-      const token = data.token
-      //console.log(data)
-      setUser(data)
-      setUserId(id)
-      setTokenId(token)
-
-      await usersById(id, token).then((data) => {
-        const dataId = data.user
-        setUser(dataId)
-        //console.log(dataId)
-      }).catch(err => {
-        console.log(err)
-      })
-    } catch (error) {
-      console.error('Erro ao carregar os dados do usuário:', error);
-    }
-
+      await AsyncStorage.getItem('@season_APP').then(res=>{          
+      const newUser = JSON.parse(res)       
+        setUser(newUser)    
+      }).catch(err=>{console.log(err)})        
+        
+      } catch (error) {
+        console.error('Erro ao carregar os dados do usuário:', error);
+      }
+     
   };
 
   useEffect(() => {
-
-    loadUserData()
-    //console.log(user)
+    loadUserData() 
 
   }, [])
 
@@ -67,34 +51,34 @@ const Header = () => {
           style={styles.image}
           source={require('../img/photo.jpg')}
         />
-        <TouchableOpacity style={styles.headerNameBtn}
-          onPress={() => nav.navigate('Home')}                >
-          <Text style={styles.headerName}> {user.name} </Text>
-        </TouchableOpacity>
+        <Pressable style={styles.headerNameBtn}
+          onPress={() => navigation.navigate('Home')}                >
+          <Text style={styles.headerName}>{user.name}</Text>
+        </Pressable>
       </View>
 
       <View style={styles.nav}>
 
-        <TouchableOpacity
+        <Pressable
           style={styles.btn}
-          onPress={() => nav.navigate('Home')}
+          onPress={() => navigation.navigate('Home')}
         >
           <Text>🏠</Text>
-        </TouchableOpacity>
+        </Pressable>
 
-        <TouchableOpacity
+        <Pressable
           style={styles.btn}
-          onPress={() => nav.navigate('Favorites')}
+          onPress={() => navigation.navigate('Favorites')}
         >
           <Text>♥️</Text>
-        </TouchableOpacity>
+        </Pressable>
 
-        <TouchableOpacity
+        <Pressable
           style={styles.btn}
           onPress={() => handleLogOut()}
         >
           <Text>🚪</Text>
-        </TouchableOpacity>
+        </Pressable>
 
         <Image
           style={styles.logo}

@@ -19,27 +19,23 @@ module.exports = {
                 password: passwordHash,
             });
     
-            return res.status(200).json({ user: { name, email }, msg: "Cadastrado com sucesso" });
+           res.status(200).json({ user: { name, email }, msg: "Cadastrado com sucesso" });
 
     },
     async loginUser(req, res) {
 
         const { email, password } = req.body
         const user = await User.findOne({ where: { email: email } });
-
-
         const checkPassword = await bcrypt.compare(password, user.password)
 
         if (!checkPassword) {
             res.status(400).json({ error: 'email ou senha incorretos' });
         }
-
         try {
             const secret = process.env.SECRET
             const token = jwt.sign({ id: user._id }, secret,)
-            res.status(200).json({ user:user ,msg: "Autenticado com sucesso!",token})
-
-
+            const newUser = {id:user.id, name:user.name, email:user.email, token}
+            res.status(200).json({ user:newUser ,msg: "Autenticado com sucesso!"})
         } catch (error) {
             console.log(error)
         }
@@ -64,6 +60,7 @@ module.exports = {
             //console.log({error})
         }
     },
+    
     async listUsers(req, res, next) {
         try {
             const users = await User.findAll()
@@ -80,6 +77,7 @@ module.exports = {
 
         }
     },
+    
     async deleteUser(req, res) {
         const { id } = req.params
         const user = await User.findOne({ where: { id } })
@@ -94,16 +92,14 @@ module.exports = {
         }
     },
     async getUser(req, res) {
+
         const { id } = req.params
         const user = await User.findOne({ where: { id } })
-
-        const { newId, name, email } = user
+       
         if (!user) {
             res.status(400).json({ message: "nenhum resultado encontrado" })
-        } else {
-
-            
-            res.status(200).json({ user: { id:newId, name, email } })
+        } else {            
+            res.status(200).json({ user: { id:user.id, name:user.name, email:user.email } })
             return user
         }
     }

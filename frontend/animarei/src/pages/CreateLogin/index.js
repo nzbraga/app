@@ -82,11 +82,9 @@ export default function CreateLogin() {
         <Text style={style.buttonText}>Criar</Text>
       </Pressable>
 
-      <br></br>
+     
       <Text> ------------------ ou ------------------ </Text>
-      <br></br>
-      <br></br>
-
+      
       <Text style={style.title}> JA TEM CADASTRO?</Text>
       <Pressable style={style.button} onPress={() => navigation.navigate("Login")}>
         <Text style={style.buttonText}> Logar </Text>
