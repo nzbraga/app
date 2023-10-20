@@ -34,7 +34,7 @@ export async function loginUser(email,password){
     
   } catch (error) {    
     //console.log(error.response.data.error)
-    alert(error.response)
+    alert(error.response.data.error)
     const result = { success: false };
     return result;
   }   

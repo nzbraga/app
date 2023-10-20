@@ -42,6 +42,18 @@ export default StyleSheet.create({
     alignSelf:"center",
     alignContent:"center"
   },
+  btnPlus:{
+    backgroundColor: '#d1efc6',
+    padding:5,
+    margin:5,
+    borderRadius:30,
+    width:45,
+    height:45,
+    alignItems: 'center',
+    justifyContent: "center",
+    alignSelf:"center",
+    alignContent:"center"
+  },
   headerName: {
     fontSize: 15,     
     fontWeight: 'bold',

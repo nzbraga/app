@@ -17,6 +17,9 @@ const [ password, setPassword] = useState('')
 const navigation = useNavigation()
 
 async function handleLoginUser(email,password){
+  if(!email || !password){
+    alert("Campos Obrigatorios")
+  }
 
   await loginUser(email, password).then(res=>{    
     const newData = res.data
@@ -30,6 +33,9 @@ async function handleLoginUser(email,password){
     }    
     setEmail('')
     setPassword('')
+  }).catch(error=>{
+    console.error('Erro ao conectar:', error);
+    alert(`Erro ao conectar com servidor`)
   })
 }
 

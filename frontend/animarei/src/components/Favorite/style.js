@@ -5,6 +5,7 @@ const styles = StyleSheet.create({
    backgroundColor: "#65945F",     
    alignContent: "center",
    alignSelf: "center",
+   textAlign:"center",
    width: "100%",
    height: "100%",
   },
@@ -46,7 +47,9 @@ const styles = StyleSheet.create({
     textAlign:"center",  
   }, 
   buttonContainer:{
-    flexDirection: "row",    
+    flexDirection: "row", 
+    justifyContent:"space-around",
+    margin:10   
   }
 });
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, Image, TouchableOpacity } from "react-native";
+import { View, Text, FlatList, Image, TouchableOpacity, ActivityIndicator } from "react-native";
 
 import styles from "./style";
 
@@ -8,6 +8,7 @@ import { useNavigation } from "@react-navigation/native";
 
 
 import { createList } from "../../../service/db/List";
+import Favorite from "../../Favorite";
 
 
 function ApiList({ data }) {
@@ -16,6 +17,7 @@ function ApiList({ data }) {
   
   const [user, setUser] = useState({})
   const [favList, setFavList] = useState({})
+  const [isLoading, setIsLoading] = useState(false)
 
 
   const loadUserData = async () => {
@@ -38,8 +40,10 @@ function ApiList({ data }) {
   function handleAnimeFav(title, description,user_id, token){
     const newTitle = title + ' ~ ' + user_id
     const newDesc = '0' + ' / ' + description
-    createList(newTitle, newDesc,user_id, token)
-  
+    createList(newTitle, newDesc,user_id, token).then(()=>{
+      alert('Salvo!')
+    })
+    navigation.navigate(Favorite)
 
   }
 
@@ -91,15 +95,18 @@ function ApiList({ data }) {
     </>
   );  
   return (
+    <>
+      {isLoading ? <ActivityIndicator/>:
     <View style={styles.container}>
-
       <FlatList
-        data={data}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.mal_id.toString()}
+      data={data}
+      renderItem={renderItem}
+      keyExtractor={(item) => item.mal_id.toString()}
       />
-    </View>
-  );
+      </View>
+    }
+    </>
+      );
 }
 
 export default ApiList;

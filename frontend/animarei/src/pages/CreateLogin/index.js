@@ -22,15 +22,16 @@ export default function CreateLogin() {
     await createUser(name, email, password, passwordConfirm).then(res => {
       if (res.success) {
         //console.log(res.data.msg)
-        const alertMsg = res.data.msg
-        console.log(alertMsg)
+        const alertMsg = res.data.msg        
+        alert(alertMsg)
         
         navigation.navigate('Login')
-
+        
       } else {
         console.error('Erro:', res.error);
         const alertMsg = res.error.error
-        console.log(alertMsg)
+        //console.log(alertMsg)
+        alert(alertMsg)
         
       }
     })
@@ -39,8 +40,6 @@ export default function CreateLogin() {
         const alertMsg = error.error
         alert(alertMsg)
       });
-
-
   }
   return (
     <View style={style.container}>

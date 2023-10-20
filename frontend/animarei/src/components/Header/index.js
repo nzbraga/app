@@ -9,12 +9,13 @@ import { logOut } from '../../service/storage/localUser';
 
 import styles from './style';
 
+ 
+const Header = ( {page} ) => {
 
-const Header = () => {
+  const navigation = useNavigation()
 
   const [user, setUser] = useState({})
 
-  const navigation = useNavigation()
 
   function handleLogOut() {
     const logUser = logOut().then(() => {
@@ -60,16 +61,14 @@ const Header = () => {
       <View style={styles.nav}>
 
         <Pressable
-          style={styles.btn}
-          onPress={() => navigation.navigate('Home')}
-        >
+         style={page === 'Home' ?   styles.btnPlus : styles.btn}
+          onPress={() => navigation.navigate('Home')}        >
           <Text>🏠</Text>
         </Pressable>
 
         <Pressable
-          style={styles.btn}
-          onPress={() => navigation.navigate('Favorites')}
-        >
+           style={page === 'Favorite' ?   styles.btnPlus : styles.btn}
+          onPress={() => navigation.navigate('Favorites' )}        >
           <Text>♥️</Text>
         </Pressable>
 

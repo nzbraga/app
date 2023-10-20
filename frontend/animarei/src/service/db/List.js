@@ -27,17 +27,18 @@ export async function ListsById(id, token) {
     newList(localList);
     return lists;
   } catch (error) {
-    console.error(error);
+   // console.error(error);
+    alert(`serrvidor off, confirme a conexão com a internet!
+se persistir contate a assistencia!`)
     return null;
   }
 }
-
 export async function upList(operation, id, description,token) {
   
   const currentDesc = Number(description.split('/')[0].trim())
   const totalDesc = Number(description.split('/')[1].trim())
 
-  if (operation === '+' && currentDesc <= totalDesc) {
+  if (operation === '+' && currentDesc < totalDesc) {
    
     const newMoreDesc = Number(currentDesc)
     const newDesc = newMoreDesc + 1
@@ -49,11 +50,8 @@ export async function upList(operation, id, description,token) {
       headers: { Authorization: `Bearer ${token}` }
     }).then(() => {     
       console.log("done")
-    });
-
-
-    console.log('+++')
-    
+      alert("done")
+    })    
   }
 
   if (operation === '-' && currentDesc > 0) {
@@ -67,14 +65,50 @@ export async function upList(operation, id, description,token) {
       headers: { Authorization: `Bearer ${token}` }
     }).then(() => {     
       console.log("done")
-    });
-
-
-    console.log('+++')
-    
+      alert("done")
+    });    
   }
 
+  if (operation === 'complite'){
+    const newDescription = `${totalDesc} / ${totalDesc}`      
+    
+    await axios.patch(`${baseUrl}/update-list/${id}`, {
+      description: newDescription
+    }, {
+      headers: { Authorization: `Bearer ${token}` }
+    }).then(() => {     
+      console.log("done")
+      alert("done")
+    });    
+  }
+
+  if (operation === 'reset'){
+    const newDescription = `0 / ${totalDesc}`      
+    
+    await axios.patch(`${baseUrl}/update-list/${id}`, {
+      description: newDescription
+    }, {
+      headers: { Authorization: `Bearer ${token}` }
+    }).then(() => {     
+      console.log("done")
+      alert("done")
+    });    
+  } 
+
 }
+export async function upEdit(id, description, newDesc ,token){
+  const totalDesc = Number(description.split('/')[1].trim())
+  const newDescription = `${newDesc} / ${totalDesc}`       
+    
+    await axios.patch(`${baseUrl}/update-list/${id}`, {
+      description: newDescription
+    }, {
+      headers: { Authorization: `Bearer ${token}` }
+    }).then(() => {     
+      console.log("done")
+      alert("done")
+    });    
+ }
 
 export async function deleteList(id, token) {
   axios.delete(`${baseUrl}/delete-list/${id}`, {
@@ -83,5 +117,6 @@ export async function deleteList(id, token) {
     console.log("deleted")
   })
 }
+
 
 export default { createList, ListsById }

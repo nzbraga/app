@@ -7,8 +7,8 @@ import Headers from '../../components/Header'
 export default function Favorites() {
   return (
     <View style={{height:"100%", backgroundColor:"#fdffdd"}}>
-      <Headers/>
-      <Favorite/>      
+      <Headers page='Favorites'/>      
+      <Favorite/>   
     </View>
   )
 }
